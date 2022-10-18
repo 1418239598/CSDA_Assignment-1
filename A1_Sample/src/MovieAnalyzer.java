@@ -53,7 +53,7 @@ public class MovieAnalyzer {
       int cnt = 0;
       while ((line = br.readLine()) != null) {
         number++;
-        List<String> result = CSVReader.parseLine(line,',','"');
+        List<String> result = CSVReader.parseLine(line, ',', '"');
         movies[++cnt][0] = result.get(0);
         for (int i = 1; i < 16; i++) {
           movies[cnt][i] = result.get(i);
@@ -127,11 +127,11 @@ public class MovieAnalyzer {
     LinkedHashMap<String, Integer> sorted = new LinkedHashMap<>(sortMapByValues(map));
     return sorted;
   }
-  /**.
-   * description:
 
-   * @Param $PARAMS$
-  $RETURN$
+  /**
+   * . description:
+   *
+   * @Param $PARAMS$ $RETURN$
    */
   public Map<List<String>, Integer> getCoStarCount() {
     Map<List<String>, Integer> map = new HashMap<>();
@@ -159,11 +159,11 @@ public class MovieAnalyzer {
 
     return map;
   }
-  /**.
-   * description:
 
-   * @Param $PARAMS$
-  $RETURN$
+  /**
+   * . description:
+   *
+   * @Param $PARAMS$ $RETURN$
    */
   public static <K extends Comparable, V extends Comparable> Map<K, V> sortMapByValues_forGetTop(
       Map<K, V> aMap, String[][] movies) {
@@ -176,11 +176,11 @@ public class MovieAnalyzer {
         .collect(Collectors.toList()).forEach(ele -> finalOut.put(ele.getKey(), ele.getValue()));
     return finalOut;
   }
-  /**.
-   * description:
 
-   * @Param $PARAMS$
-  $RETURN$
+  /**
+   * . description:
+   *
+   * @Param $PARAMS$ $RETURN$
    */
   public List<String> getTopMovies(int top_k, String by) {
     Map<Integer, Integer> map = new HashMap<>();
@@ -191,9 +191,9 @@ public class MovieAnalyzer {
     } else if (by.equals("overview")) {
       for (int i = 1; i <= number; i++) {
         map.put(i, movies[i][7].length());
-        for (int j = 0; j <movies[i][7].length() ; j++) {
-          if(movies[i][7].charAt(j)=='"'){
-            map.put(i,map.get(i)+1);
+        for (int j = 0; j < movies[i][7].length(); j++) {
+          if (movies[i][7].charAt(j) == '"') {
+            map.put(i, map.get(i) + 1);
           }
         }
       }
@@ -211,42 +211,44 @@ public class MovieAnalyzer {
     return top;
   }
 
-  public List<String> getTopStars(int top_k, String by)
-  {
+  /**
+   * . description:
+   *
+   * @Param $PARAMS$ $RETURN$
+   */
+  public List<String> getTopStars(int top_k, String by) {
     Map<String, Double> map = new HashMap<>();
     Map<String, Integer> map_num = new HashMap<>();
     for (int i = 1; i <= number; i++) {
       for (int j = 10; j <= 13; j++) {
         String star = movies[i][j];
-        if (map_num.containsKey(star))
+        if (map_num.containsKey(star)) {
           map_num.put(star, map_num.get(star) + 1);
-        else
+        } else {
           map_num.put(star, 1);
-        if(by.equals("rating")) {
-          Float rating=Float.parseFloat(movies[i][6]);
-          if (map.containsKey(star))
-            map.put(star, map.get(star) + rating);
-          else
-            map.put(star, Double.valueOf(rating));
         }
-
-        else if(by.equals("gross")){
-          String[] money=movies[i][15].split(",");
-          String gross="";
-          for(String mon:money)
-          {
-            gross+=mon;
+        if (by.equals("rating")) {
+          Float rating = Float.parseFloat(movies[i][6]);
+          if (map.containsKey(star)) {
+            map.put(star, map.get(star) + rating);
+          } else {
+            map.put(star, Double.valueOf(rating));
           }
-          if(!gross.equals("")) {
+        } else if (by.equals("gross")) {
+          String[] money = movies[i][15].split(",");
+          String gross = "";
+          for (String mon : money) {
+            gross += mon;
+          }
+          if (!gross.equals("")) {
             Float Gross = Float.parseFloat(gross);
-            if (map.containsKey(star))
+            if (map.containsKey(star)) {
               map.put(star, map.get(star) + Gross);
-            else
+            } else {
               map.put(star, Double.valueOf(Gross));
-          }
-          else
-          {
-            map_num.put(star, map_num.get(star)-1 );
+            }
+          } else {
+            map_num.put(star, map_num.get(star) - 1);
           }
         }
 
@@ -254,31 +256,35 @@ public class MovieAnalyzer {
 
     }
     Map<String, Double> newmap = new HashMap<>();
-    for(String key: map.keySet())
-    {
-      newmap.put(key,(map.get(key).doubleValue()/map_num.get(key)));
+    for (String key : map.keySet()) {
+      newmap.put(key, (map.get(key).doubleValue() / map_num.get(key)));
     }
     LinkedHashMap<String, Double> sorted = new LinkedHashMap<>(sortMapByValues(newmap));
-    List<String> top=new ArrayList<>();
-    for(String name:sorted.keySet())
-    {
+    List<String> top = new ArrayList<>();
+    for (String name : sorted.keySet()) {
       top.add(name);
-      if(--top_k==0) break;
+      if (--top_k == 0) {
+        break;
+      }
     }
     return top;
   }
 
-  public List<String> searchMovies(String genre, float min_rating, int max_runtime)
-  {
-    List<String> list=new ArrayList<>();
-    for (int i = 1; i <=number ; i++) {
-      String[] genres=movies[i][5].split(", ");
-      for(String a:genres)
-      {
-        if(a.equals(genre))
-        {
-          if(Float.parseFloat(movies[i][6])>=min_rating && Integer.parseInt(movies[i][4].split(" min")[0])<=max_runtime)
+  /**
+   * . description:
+   *
+   * @Param $PARAMS$ $RETURN$
+   */
+  public List<String> searchMovies(String genre, float min_rating, int max_runtime) {
+    List<String> list = new ArrayList<>();
+    for (int i = 1; i <= number; i++) {
+      String[] genres = movies[i][5].split(", ");
+      for (String a : genres) {
+        if (a.equals(genre)) {
+          if (Float.parseFloat(movies[i][6]) >= min_rating
+              && Integer.parseInt(movies[i][4].split(" min")[0]) <= max_runtime) {
             list.add(movies[i][1]);
+          }
           break;
         }
       }
@@ -288,11 +294,10 @@ public class MovieAnalyzer {
     return list;
   }
 
-  /**.
-   * description:
-
-   * @Param $PARAMS$
-  $RETURN$
+  /**
+   * . description:
+   *
+   * @Param $PARAMS$ $RETURN$
    */
   public interface MyInterface {
 
@@ -305,76 +310,49 @@ public class MovieAnalyzer {
 
 class CSVReader {
 
-  public static void main(String[] args) throws Exception {
-  }
   public static List<String> parseLine(String line, char s, char c) {
     List<String> r = new ArrayList<>();
-    if (line.isEmpty()  && line == null)
-    {
+    if (line.isEmpty() && line == null) {
       return r;
     }
     StringBuffer cval = new StringBuffer();
-    boolean in = false;
-    boolean star = false;
-    boolean quo = false;
+    boolean in = false, star = false, quo = false;
     char[] chars = line.toCharArray();
-    for (char h : chars)
-    {
-      if (in)
-      {
+    for (char h : chars) {
+      if (in) {
         star = true;
-        if (h == c)
-        {
+        if (h == c) {
           in = false;
           quo = false;
-        }
-        else
-        {
-          if (h == '\"')
-          {
-            if (!quo)
-            {
+        } else {
+          if (h == '\"') {
+            if (!quo) {
               cval.append(h);
               quo = true;
             }
-          }
-          else
-          {
+          } else {
             cval.append(h);
           }
 
         }
-      }
-      else
-      {
-        if (h == c)
-        {
+      } else {
+        if (h == c) {
           in = true;
-          if (chars[0] != '"' && c == '\"')
-          {
+          if (chars[0] != '"' && c == '\"') {
             cval.append('"');
           }
-          if (star)
-          {
+          if (star) {
             cval.append('"');
           }
-        }
-        else if (h == s)
-        {
+        } else if (h == s) {
           r.add(cval.toString());
           cval = new StringBuffer();
           star = false;
-        }
-        else if (h == '\r')
-        {
+        } else if (h == '\r') {
           continue;
-        }
-        else if (h == '\n')
-        {
+        } else if (h == '\n') {
           break;
-        }
-        else
-        {
+        } else {
           cval.append(h);
         }
       }
